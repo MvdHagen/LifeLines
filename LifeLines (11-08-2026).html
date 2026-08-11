@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeLines</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;background:#F5F0E8;color:#1a1a2e;min-height:100vh}
+:root{
+  --bg:#F5F0E8;--card:rgba(255,255,255,0.6);--card-h:rgba(255,255,255,0.85);
+  --brd:rgba(30,30,60,0.13);--brd2:rgba(30,30,60,0.22);
+  --acc:#3B5BA5;--acc2:#5578C8;
+  --txt:#1a1a2e;--txt2:#4a4a6a;--txt3:#8a8aaa;
+  --grn:#2A9D6E;--red:#C0392B;
+  --btn:#2A3347;--btn-h:#3D4F6E;--btn-brd:rgba(255,255,255,0.28);
+  --modal-bg:#1E2535;--input-bg:rgba(255,255,255,0.75);--input-brd:rgba(30,30,60,0.2);
+}
+.app{display:flex;flex-direction:column;height:100vh;max-width:800px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--brd);background:rgba(245,240,232,0.92);backdrop-filter:blur(10px);flex-shrink:0;z-index:10;position:relative}
+.logo{font-size:17px;font-weight:700;color:var(--txt)}.logo span{color:var(--acc)}
+.back-btn{background:var(--btn);border:1px solid var(--btn-brd);border-radius:8px;cursor:pointer;color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;padding:7px 12px;transition:background .15s}
+.back-btn:hover{background:var(--btn-h)}
+.content{flex:1;padding:16px;overflow-y:auto;position:relative;z-index:1}
+.card{background:var(--card);border:1px solid var(--brd);border-radius:16px;backdrop-filter:blur(4px);transition:border-color .2s,background .2s}
+.card:hover{border-color:var(--brd2);background:var(--card-h)}
+.dash-sub{font-size:12px;color:var(--txt2);margin-bottom:14px}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cat-card{padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:8px;min-height:100px;position:relative}
+.cat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(59,91,165,0.12);border:1px solid rgba(59,91,165,0.2);color:var(--acc)}
+.cat-name{font-size:14px;font-weight:600;color:var(--txt)}.cat-count{font-size:11px;color:var(--txt2)}
+.cat-arr{position:absolute;right:12px;bottom:12px;color:var(--txt3);font-size:13px}
+.add-btn{background:var(--btn);color:#fff;border:1px solid var(--btn-brd);border-radius:10px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .15s}
+.add-btn:hover{background:var(--btn-h)}
+.ico-btn{background:var(--btn);color:#fff;border:1px solid var(--btn-brd);border-radius:9px;padding:8px 12px;font-size:14px;cursor:pointer;display:flex;align-items:center;transition:background .15s}
+.ico-btn:hover{background:var(--btn-h)}
+.del-btn{background:var(--btn);border:1px solid var(--btn-brd);border-radius:6px;cursor:pointer;color:#fff;font-size:12px;padding:3px 7px;display:flex;align-items:center;margin-left:auto;transition:background .15s}
+.del-btn:hover{background:#5a1a1a;border-color:var(--red)}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sec-title{font-size:15px;font-weight:600;color:var(--txt)}
+.sub-card{padding:14px;margin-bottom:8px;cursor:pointer}
+.sub-name{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--txt)}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(59,91,165,0.1);color:var(--acc);font-weight:500;border:1px solid rgba(59,91,165,0.15)}
+.mid-card{padding:14px;margin-bottom:8px;cursor:pointer;border-left:3px solid var(--acc)}
+.mid-name{font-size:14px;font-weight:600;color:var(--txt);margin-bottom:3px}
+.mid-count{font-size:11px;color:var(--txt2)}
+.sub-add-strip{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--btn);border:1px solid var(--btn-brd);border-radius:12px;padding:10px;cursor:pointer;font-size:12px;color:#fff;margin-bottom:12px;font-weight:600;transition:background .15s}
+.sub-add-strip:hover{background:var(--btn-h)}
+.module{margin-bottom:12px}.mod-hdr{padding:11px 14px 9px;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px;border-radius:16px 16px 0 0}
+.mod-ico{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;background:rgba(59,91,165,0.12);color:var(--acc)}
+.mod-title{font-size:13px;font-weight:600;color:var(--txt)}.mod-body{padding:12px 14px}
+.gi-sm{flex:1;background:var(--input-bg);border:1px solid var(--input-brd);border-radius:9px;padding:8px 10px;font-size:13px;color:var(--txt);outline:none}
+.gi-sm::placeholder{color:var(--txt3)}.gi-sm:focus{border-color:var(--acc)}
+.row-add{display:flex;gap:7px;margin-bottom:10px}
+.ti-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--brd);font-size:13px;color:var(--txt)}
+.ti-row:last-child{border-bottom:none}.ti-row input[type=checkbox]{accent-color:var(--acc);width:15px;height:15px;flex-shrink:0}
+.ti-row.done span{text-decoration:line-through;color:var(--txt3)}
+.done-lbl{font-size:11px;color:var(--txt3);margin:10px 0 6px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.empty{color:var(--txt3);font-size:12px;text-align:center;padding:12px 0}
+.notes-ta{width:100%;min-height:80px;background:var(--input-bg);border:1px solid var(--input-brd);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--txt);resize:vertical;font-family:inherit;outline:none}
+.notes-ta:focus{border-color:var(--acc)}
+.notes-btn{margin-top:7px;background:var(--btn);border:1px solid var(--btn-brd);border-radius:9px;padding:7px 16px;font-size:12px;cursor:pointer;color:#fff;font-weight:600}
+.notes-btn:hover{background:var(--btn-h)}
+.link-item{padding:8px 0;border-bottom:1px solid var(--brd);font-size:13px}.link-item:last-child{border-bottom:none}
+.link-a{color:var(--acc);font-weight:600;text-decoration:none}.link-a:hover{text-decoration:underline}
+.link-url{font-size:11px;color:var(--txt3);margin-top:2px}.link-desc{font-size:11px;color:var(--txt2);margin-top:2px}
+.hcell{width:30px;height:30px;border-radius:8px;border:1px solid var(--brd2);background:var(--input-bg);cursor:pointer;color:transparent;display:flex;align-items:center;justify-content:center;transition:background .1s;font-size:15px}
+.hcell.done{background:var(--grn);border-color:var(--grn);color:#fff;font-weight:700}
+.hday{font-size:10px;color:var(--txt2);text-align:center;font-weight:500}
+.hname{font-size:12px;color:var(--txt);font-weight:500;min-width:80px;padding-right:6px}
+.metric-form{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.metric-form input{flex:1;min-width:70px;background:var(--input-bg);border:1px solid var(--input-brd);border-radius:9px;padding:7px 10px;font-size:13px;color:var(--txt);outline:none}
+.metric-form input:focus{border-color:var(--acc)}
+.met-row{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--brd);color:var(--txt2)}
+.met-row span:last-child{color:var(--txt);font-weight:600}
+.img-drop{width:100%;background:var(--input-bg);border:2px dashed var(--brd2);border-radius:12px;padding:20px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.img-drop:hover{border-color:var(--acc)}.img-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.img-drop i{font-size:24px;color:var(--acc)}.img-drop-txt{font-size:13px;color:var(--txt);font-weight:500}.img-drop-sub{font-size:11px;color:var(--txt3)}
+.img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.img-thumb-wrap{position:relative;aspect-ratio:1}.img-thumb{width:100%;height:100%;object-fit:cover;border-radius:10px;border:1px solid var(--brd);display:block}
+.img-del{position:absolute;top:4px;right:4px;background:var(--btn);border:1px solid var(--btn-brd);border-radius:6px;color:#fff;cursor:pointer;font-size:11px;padding:3px 5px;display:flex;align-items:center}
+.img-del:hover{background:var(--red)}
+.bnav{border-top:1px solid var(--brd);display:flex;justify-content:space-around;padding:8px 0 6px;background:rgba(245,240,232,0.95);flex-shrink:0;z-index:10;position:relative}
+.nitem{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--txt3);cursor:pointer;padding:4px 14px;border-radius:10px;font-weight:500;transition:color .15s}
+.nitem.active{color:var(--acc)}.nitem i{font-size:21px}
+.search-overlay{position:absolute;inset:0;background:var(--bg);z-index:50;display:none;flex-direction:column;padding:16px}
+.search-wrap{display:flex;gap:8px;margin-bottom:14px}
+.search-input{flex:1;background:var(--input-bg);border:1px solid var(--input-brd);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--txt);outline:none}
+.search-input:focus{border-color:var(--acc)}
+.search-cancel{background:var(--btn);color:#fff;border:1px solid var(--btn-brd);border-radius:10px;padding:10px 14px;font-size:13px;cursor:pointer;font-weight:600}
+.search-results{flex:1;overflow-y:auto}
+.search-hit{padding:10px 12px;border:1px solid var(--brd);border-radius:12px;margin-bottom:8px;background:var(--card);cursor:pointer}
+.search-hit:hover{border-color:var(--acc);background:var(--card-h)}
+.hit-path{font-size:11px;color:var(--txt3);margin-bottom:3px}.hit-text{font-size:13px;color:var(--txt);font-weight:500}
+.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:none;align-items:flex-end;justify-content:center}
+.modal-box{background:var(--modal-bg);border:1px solid rgba(255,255,255,0.15);border-radius:20px 20px 0 0;padding:22px 18px 28px;width:100%;max-width:800px;max-height:88vh;overflow-y:auto;color:#fff}
+.modal-handle{width:36px;height:3px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 16px}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:16px;color:#fff}
+.modal-section{font-size:11px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin:14px 0 8px}
+.fl{font-size:11px;color:rgba(255,255,255,0.55);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.modal-input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:10px 12px;font-size:14px;color:#fff;margin-bottom:12px;outline:none}
+.modal-input::placeholder{color:rgba(255,255,255,0.3)}.modal-input:focus{border-color:#5578C8}
+.chks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;color:#fff;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:9px;padding:8px 10px}
+.chk:hover{border-color:#5578C8}.chk input[type=checkbox]{accent-color:#5578C8;width:15px;height:15px;flex-shrink:0}
+.mbtns{display:flex;gap:8px;margin-top:4px}
+.btn-c{flex:1;background:#2A3347;border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:11px;font-size:14px;cursor:pointer;color:#fff;font-weight:600}
+.btn-c:hover{background:#3D4F6E}
+.btn-s{flex:1;background:#3B5BA5;border:none;border-radius:10px;padding:11px;font-size:14px;cursor:pointer;color:#fff;font-weight:600}
+.btn-s:hover{background:#5578C8}
+.btn-danger{flex:1;background:#7a1f1f;border:1px solid rgba(255,100,100,0.3);border-radius:10px;padding:11px;font-size:14px;cursor:pointer;color:#fff;font-weight:600}
+.btn-danger:hover{background:#a12828}
+.settings-item{display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:background .15s}
+.settings-item:hover{background:rgba(255,255,255,0.10)}
+.settings-item i{font-size:18px;color:#7BB8F8;width:24px;text-align:center}
+.settings-item-name{font-size:13px;font-weight:600;color:#fff}.settings-item-desc{font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px}
+.mid-list-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;margin-bottom:6px;font-size:13px;color:#fff}
+.mid-del{background:#5a1a1a;border:1px solid rgba(255,80,80,0.3);border-radius:6px;color:#fff;cursor:pointer;font-size:11px;padding:3px 7px}
+.mid-del:hover{background:#8a2020}
+.confirm-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,80,80,0.2);border-radius:12px;padding:16px;margin-top:8px}
+.confirm-q{font-size:14px;color:#fff;margin-bottom:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="logo" id="logo">Life<span>Lines</span></div>
+    <span id="topbar-right"></span>
+  </div>
+  <div class="content" id="content"></div>
+  <div class="search-overlay" id="search-overlay">
+    <div class="search-wrap">
+      <input class="search-input" id="search-input" placeholder="Zoek in taken, notities, links..." oninput="doSearch(this.value)">
+      <button class="search-cancel" onclick="closeSearch()">Sluiten</button>
+    </div>
+    <div class="search-results" id="search-results"><p class="empty">Begin met typen om te zoeken...</p></div>
+  </div>
+  <div class="bnav">
+    <div class="nitem active" id="nav-home" onclick="goHome()"><i class="ti ti-layout-dashboard"></i>Home</div>
+    <div class="nitem" id="nav-search" onclick="openSearch()"><i class="ti ti-search"></i>Zoeken</div>
+    <div class="nitem" id="nav-settings" onclick="openSettings()"><i class="ti ti-settings"></i>Instellingen</div>
+  </div>
+</div>
+<div id="modal-wrap" class="modal-wrap"><div class="modal-box" id="modal-box"></div></div>
+
+<script>
+const CATS=[{id:'persoonlijk',name:'Persoonlijk',icon:'ti-user'},{id:'muziek',name:'Muziek',icon:'ti-music'},{id:'huishouden',name:'Huishouden',icon:'ti-home'},{id:'administratief',name:'Administratief',icon:'ti-clipboard-list'}];
+const MODS=[{id:'todo',label:'To-do lijst',icon:'ti-checkbox'},{id:'notes',label:'Notities',icon:'ti-notes'},{id:'links',label:'Links',icon:'ti-link'},{id:'habit',label:'Habit tracker',icon:'ti-calendar-check'},{id:'metric',label:'Metric tracker',icon:'ti-chart-line'},{id:'images',label:'Afbeeldingen',icon:'ti-photo'}];
+function ld(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+const S={view:'dashboard',catId:null,midId:null,subId:null,subs:ld('ll8_subs',{}),mids:ld('ll8_mids',{}),todos:ld('ll8_todos',{}),notes:ld('ll8_notes',{}),links:ld('ll8_links',{}),habits:ld('ll8_habits',{}),metrics:ld('ll8_metrics',{}),images:ld('ll8_images',{})};
+function ss(k){sv('ll8_'+k,S[k])}
+function goHome(){S.view='dashboard';S.catId=null;S.midId=null;S.subId=null;closeSearch();render()}
+function goCat(id){S.view='category';S.catId=id;S.midId=null;S.subId=null;render()}
+function goMid(catId,midId){S.view='mid';S.catId=catId;S.midId=midId;S.subId=null;render()}
+function goSub(catId,midId,subId){S.view='sub';S.catId=catId;S.midId=midId||null;S.subId=subId;render()}
+function openModal(html){document.getElementById('modal-box').innerHTML=html;document.getElementById('modal-wrap').style.display='flex'}
+function closeModal(){document.getElementById('modal-wrap').style.display='none'}
+function setNav(a){['home','search','settings'].forEach(n=>{const el=document.getElementById('nav-'+n);if(el)el.classList.toggle('active',n===a)})}
+
+function openSearch(){document.getElementById('search-overlay').style.display='flex';document.getElementById('search-input').value='';document.getElementById('search-results').innerHTML='<p class="empty">Begin met typen om te zoeken...</p>';setTimeout(()=>document.getElementById('search-input').focus(),50);setNav('search')}
+function closeSearch(){document.getElementById('search-overlay').style.display='none';setNav(S.view==='dashboard'?'home':'')}
+function doSearch(q){
+  const r=document.getElementById('search-results');
+  if(!q.trim()){r.innerHTML='<p class="empty">Begin met typen om te zoeken...</p>';return}
+  const hits=[];const lq=q.toLowerCase();
+  CATS.forEach(cat=>{
+    const process=(subs,pathPrefix,navFn)=>{
+      subs.forEach(sub=>{
+        const path=pathPrefix+sub.name;
+        const sk=navFn.key(sub.id);
+        (S.todos[sk]||[]).forEach(t=>{if(t.text.toLowerCase().includes(lq))hits.push({path,label:'Taak',text:t.text,go:()=>navFn.go(sub.id)})});
+        const note=S.notes[sk]||'';
+        if(note.toLowerCase().includes(lq))hits.push({path,label:'Notitie',text:note.slice(0,80),go:()=>navFn.go(sub.id)});
+        (S.links[sk]||[]).forEach(l=>{if((l.title+l.url+(l.desc||'')).toLowerCase().includes(lq))hits.push({path,label:'Link',text:l.title,go:()=>navFn.go(sub.id)})});
+      });
+    };
+    process(S.subs[cat.id]||[],cat.name+' › ',{key:id=>cat.id+'_null_'+id,go:id=>goSub(cat.id,null,id)});
+    (S.mids[cat.id]||[]).forEach(mid=>{
+      process(S.subs[cat.id+'_'+mid.id]||[],cat.name+' › '+mid.name+' › ',{key:id=>cat.id+'_'+mid.id+'_'+id,go:id=>goSub(cat.id,mid.id,id)});
+    });
+  });
+  if(!hits.length){r.innerHTML='<p class="empty">Geen resultaten voor "'+esc(q)+'"</p>';return}
+  window._hits=hits;
+  r.innerHTML=hits.slice(0,30).map((h,i)=>`<div class="search-hit" onclick="searchNav(${i})"><div class="hit-path">${esc(h.path)} · <b>${esc(h.label)}</b></div><div class="hit-text">${esc(h.text)}</div></div>`).join('');
+}
+function searchNav(i){const h=window._hits?.[i];if(h){closeSearch();h.go();}}
+
+function openSettings(){setNav('settings');openModal(`<div class="modal-handle"></div><div class="modal-title"><i class="ti ti-settings" style="margin-right:6px;color:#7BB8F8"></i>Instellingen</div><div class="modal-section">Categorieën beheren</div><div class="settings-item" onclick="openManageMids()"><i class="ti ti-folders"></i><div class="settings-item-txt"><div class="settings-item-name">Tussencategorieën</div><div class="settings-item-desc">Voeg een extra laag toe tussen hoofdcategorie en subcategorie</div></div><i class="ti ti-chevron-right" style="color:rgba(255,255,255,0.3)"></i></div><div class="modal-section">Gevaarlijke acties</div><div class="settings-item" onclick="openResetSub()" style="border-color:rgba(255,80,80,0.2)"><i class="ti ti-trash" style="color:#F87171"></i><div class="settings-item-txt"><div class="settings-item-name" style="color:#F87171">Subcategorie resetten</div><div class="settings-item-desc">Verwijder alle gegevens in een subcategorie</div></div><i class="ti ti-chevron-right" style="color:rgba(255,255,255,0.3)"></i></div><div class="mbtns" style="margin-top:16px"><button class="btn-c" onclick="closeModal();setNav(S.view==='dashboard'?'home':'')">Sluiten</button></div>`)}
+
+function openManageMids(){openModal(`<div class="modal-handle"></div><div class="modal-title"><i class="ti ti-folders" style="margin-right:6px;color:#7BB8F8"></i>Tussencategorieën</div><label class="fl">Hoofdcategorie</label><select class="modal-input" id="mid-cat-sel" onchange="refreshMidList()">${CATS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select><label class="fl">Nieuwe tussencategorie</label><div style="display:flex;gap:7px;margin-bottom:12px"><input class="modal-input" id="mid-name-inp" placeholder="bijv. Albums, Projecten..." style="margin:0;flex:1"><button class="btn-s" onclick="addMid()" style="padding:0 16px;border-radius:10px;white-space:nowrap">+ Toevoegen</button></div><label class="fl">Bestaande tussencategorieën</label><div id="mid-list"></div><div class="mbtns" style="margin-top:16px"><button class="btn-c" onclick="openSettings()">← Terug</button></div>`);refreshMidList()}
+function refreshMidList(){const sel=document.getElementById('mid-cat-sel');if(!sel)return;const catId=sel.value;const mids=S.mids[catId]||[];const el=document.getElementById('mid-list');if(!el)return;el.innerHTML=mids.length===0?'<p style="font-size:12px;color:rgba(255,255,255,0.4);text-align:center;padding:8px">Nog geen tussencategorieën</p>':mids.map(m=>`<div class="mid-list-item"><span>${esc(m.name)}</span><button class="mid-del" onclick="delMid('${catId}','${m.id}')"><i class="ti ti-x"></i> Verwijderen</button></div>`).join('')}
+function addMid(){const catId=document.getElementById('mid-cat-sel')?.value;const name=document.getElementById('mid-name-inp')?.value.trim();if(!name)return;if(!S.mids[catId])S.mids[catId]=[];S.mids[catId].push({id:'m'+Date.now(),name});ss('mids');document.getElementById('mid-name-inp').value='';refreshMidList()}
+function delMid(catId,midId){S.mids[catId]=(S.mids[catId]||[]).filter(m=>m.id!==midId);ss('mids');refreshMidList()}
+
+function getAllSubs(){
+  const allSubs=[];
+  CATS.forEach(cat=>{
+    (S.subs[cat.id]||[]).forEach(sub=>allSubs.push({
+      storKey:cat.id, subId:sub.id, dataKey:cat.id+'_null_'+sub.id,
+      label:cat.name+' › '+sub.name, catId:cat.id, midId:null
+    }));
+    (S.mids[cat.id]||[]).forEach(mid=>(S.subs[cat.id+'_'+mid.id]||[]).forEach(sub=>allSubs.push({
+      storKey:cat.id+'_'+mid.id, subId:sub.id, dataKey:cat.id+'_'+mid.id+'_'+sub.id,
+      label:cat.name+' › '+mid.name+' › '+sub.name, catId:cat.id, midId:mid.id
+    })));
+  });
+  return allSubs;
+}
+
+function openResetSub(){
+  const allSubs=getAllSubs();
+  const opts=allSubs.length===0?'<option value="">Geen subcategorieën gevonden</option>':allSubs.map((s,i)=>`<option value="${i}">${esc(s.label)}</option>`).join('');
+  window._allSubsCache=allSubs;
+  openModal(`
+<div class="modal-handle"></div>
+<div class="modal-title" style="color:#F87171"><i class="ti ti-trash" style="margin-right:6px"></i>Subcategorie beheren</div>
+<label class="fl">Kies subcategorie</label>
+<select class="modal-input" id="reset-sub-sel">${opts}</select>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+  <div class="confirm-box" style="border-color:rgba(255,160,0,0.25)">
+    <div class="confirm-q" style="font-size:13px">🗑️ <b>Leegmaken</b> — verwijdert alle inhoud (taken, notities, links, etc.) maar behoudt de subcategorie in de lijst.</div>
+    <div class="mbtns" style="margin-top:10px">
+      <button class="btn-c" onclick="openSettings()">← Terug</button>
+      <button class="btn-danger" style="background:#7a4a0a;border-color:rgba(255,160,0,0.3)" onclick="confirmAction('reset')">Leegmaken</button>
+    </div>
+  </div>
+  <div class="confirm-box" style="border-color:rgba(255,80,80,0.25)">
+    <div class="confirm-q" style="font-size:13px">❌ <b>Volledig verwijderen</b> — verwijdert alle inhoud én verwijdert de subcategorie zelf uit de lijst.</div>
+    <div class="mbtns" style="margin-top:10px">
+      <button class="btn-c" onclick="openSettings()">← Terug</button>
+      <button class="btn-danger" onclick="confirmAction('delete')">Verwijderen</button>
+    </div>
+  </div>
+</div>`);
+}
+
+function confirmAction(action){
+  const idx=document.getElementById('reset-sub-sel')?.value;
+  const sub=window._allSubsCache?.[idx];
+  if(!sub)return;
+  const actionLabel=action==='reset'?'leegmaken':'volledig verwijderen';
+  const actionBtn=action==='reset'
+    ?`<button class="btn-danger" style="background:#7a4a0a;border-color:rgba(255,160,0,0.3)" onclick="doAction('reset','${sub.storKey}','${sub.subId}','${sub.dataKey}')">Ja, leegmaken</button>`
+    :`<button class="btn-danger" onclick="doAction('delete','${sub.storKey}','${sub.subId}','${sub.dataKey}')">Ja, verwijderen</button>`;
+  openModal(`
+<div class="modal-handle"></div>
+<div class="modal-title" style="color:#F87171">Weet je het zeker?</div>
+<div class="confirm-box">
+  <div class="confirm-q">Weet je zeker dat je de gegevens in deze subcategorie wil verwijderen?<br><br>
+  Je staat op het punt om <b>${esc(sub.label)}</b> te <b>${actionLabel}</b>.<br><br>
+  Dit kan <b>niet</b> ongedaan worden gemaakt.</div>
+  <div class="mbtns">
+    <button class="btn-c" onclick="openResetSub()">Annuleren</button>
+    ${actionBtn}
+  </div>
+</div>`);
+}
+
+function doAction(action, storKey, subId, dataKey){
+  // altijd data wissen
+  ['todos','links','habits','metrics','images'].forEach(k=>{delete S[k][dataKey];ss(k)});
+  S.notes[dataKey]='';ss('notes');
+  // bij volledig verwijderen ook de subcategorie zelf weggooien
+  if(action==='delete'){
+    S.subs[storKey]=(S.subs[storKey]||[]).filter(x=>x.id!==subId);
+    ss('subs');
+  }
+  closeModal();
+  // als je op de verwijderde sub zit, ga terug
+  if(action==='delete'&&S.subId===subId){
+    if(S.midId)goMid(S.catId,S.midId);
+    else if(S.catId)goCat(S.catId);
+    else goHome();
+  } else {
+    render();
+  }
+  alert(action==='delete'?'Subcategorie succesvol verwijderd.':'Subcategorie succesvol geleegd.');
+}
+
+function openAddSub(){openModal(`<div class="modal-handle"></div><div class="modal-title">Nieuwe subcategorie</div><label class="fl">Naam</label><input class="modal-input" id="nsn" placeholder="bijv. Medicatie, Gitaar, Budget..."><label class="fl">Modules activeren</label><div class="chks">${MODS.map(m=>`<label class="chk"><input type="checkbox" id="mc-${m.id}" checked><span>${m.label}</span></label>`).join('')}</div><div class="mbtns"><button class="btn-c" onclick="closeModal()">Annuleren</button><button class="btn-s" onclick="doAddSub()">Opslaan</button></div>`);setTimeout(()=>document.getElementById('nsn')?.focus(),50)}
+function doAddSub(){const name=document.getElementById('nsn')?.value.trim();if(!name)return alert('Geef een naam op.');const mods=MODS.map(m=>m.id).filter(id=>document.getElementById('mc-'+id)?.checked);const storKey=S.midId?S.catId+'_'+S.midId:S.catId;if(!S.subs[storKey])S.subs[storKey]=[];S.subs[storKey].push({id:'s'+Date.now(),name,modules:mods});ss('subs');closeModal();render()}
+
+function render(){
+  const logo=document.getElementById('logo');const tr=document.getElementById('topbar-right');const c=document.getElementById('content');
+  if(S.view==='dashboard'){logo.innerHTML='Life<span style="color:var(--acc)">Lines</span>';tr.innerHTML='';c.innerHTML=renderDash();setNav('home')}
+  else if(S.view==='category'){const cat=CATS.find(x=>x.id===S.catId);logo.textContent=cat.name;tr.innerHTML=`<button class="back-btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Terug</button>`;c.innerHTML=renderCat();setNav('')}
+  else if(S.view==='mid'){const cat=CATS.find(x=>x.id===S.catId);const mid=(S.mids[S.catId]||[]).find(x=>x.id===S.midId);logo.textContent=mid?.name||'Categorie';tr.innerHTML=`<button class="back-btn" onclick="goCat('${S.catId}')"><i class="ti ti-arrow-left"></i> ${cat.name}</button>`;c.innerHTML=renderMidPage();setNav('')}
+  else{const cat=CATS.find(x=>x.id===S.catId);const sub=getSub();logo.textContent=sub?.name||'Hub';const backLabel=S.midId?(S.mids[S.catId]||[]).find(x=>x.id===S.midId)?.name||cat.name:cat.name;const backFn=S.midId?`goMid('${S.catId}','${S.midId}')`:`goCat('${S.catId}')`;tr.innerHTML=`<button class="back-btn" onclick="${backFn}"><i class="ti ti-arrow-left"></i> ${backLabel}</button>`;c.innerHTML=renderSub();setNav('')}
+}
+function getSub(){const storKey=S.midId?S.catId+'_'+S.midId:S.catId;return(S.subs[storKey]||[]).find(x=>x.id===S.subId)}
+function countAllSubs(catId){let n=(S.subs[catId]||[]).length;(S.mids[catId]||[]).forEach(m=>n+=(S.subs[catId+'_'+m.id]||[]).length);return n}
+
+function renderDash(){return`<p class="dash-sub">Kies een categorie om te beginnen.</p><div class="cat-grid">${CATS.map(c=>`<div class="card cat-card" onclick="goCat('${c.id}')"><div class="cat-icon"><i class="ti ${c.icon}"></i></div><div class="cat-name">${c.name}</div><div class="cat-count">${countAllSubs(c.id)} subcategorie${countAllSubs(c.id)===1?'':'ën'}</div><i class="ti ti-chevron-right cat-arr"></i></div>`).join('')}</div>`}
+function renderCat(){const mids=S.mids[S.catId]||[];const direct=S.subs[S.catId]||[];return`<div class="sec-hdr"><span class="sec-title">Subcategorieën</span><button class="add-btn" onclick="openAddSub()"><i class="ti ti-plus"></i> Toevoegen</button></div>${mids.length===0&&direct.length===0?'<p class="empty">Nog geen subcategorieën. Klik Toevoegen of maak tussencategorieën aan via Instellingen.</p>':''}${mids.map(m=>`<div class="card mid-card" onclick="goMid('${S.catId}','${m.id}')"><div class="mid-name"><i class="ti ti-folder" style="margin-right:5px;color:var(--acc)"></i>${esc(m.name)}</div><div class="mid-count">${(S.subs[S.catId+'_'+m.id]||[]).length} subcategorie${(S.subs[S.catId+'_'+m.id]||[]).length===1?'':'ën'}</div></div>`).join('')}${direct.map(s=>`<div class="card sub-card" onclick="goSub('${S.catId}',null,'${s.id}')"><div class="sub-name">${esc(s.name)}</div><div class="tags">${(s.modules||[]).map(m=>{const mod=MODS.find(x=>x.id===m);return`<span class="tag">${mod?mod.label:m}</span>`}).join('')}</div></div>`).join('')}`}
+function renderMidPage(){const storKey=S.catId+'_'+S.midId;const subs=S.subs[storKey]||[];return`<div class="sec-hdr"><span class="sec-title">Subcategorieën</span><button class="add-btn" onclick="openAddSub()"><i class="ti ti-plus"></i> Toevoegen</button></div>${subs.length===0?'<p class="empty">Nog geen subcategorieën hier.</p>':''}${subs.map(s=>`<div class="card sub-card" onclick="goSub('${S.catId}','${S.midId}','${s.id}')"><div class="sub-name">${esc(s.name)}</div><div class="tags">${(s.modules||[]).map(m=>{const mod=MODS.find(x=>x.id===m);return`<span class="tag">${mod?mod.label:m}</span>`}).join('')}</div></div>`).join('')}`}
+function renderSub(){const sub=getSub();if(!sub)return'<p class="empty">Subcategorie niet gevonden.</p>';return`<div class="sub-add-strip" onclick="openAddSub()"><i class="ti ti-plus"></i> Subcategorie toevoegen</div>`+sub.modules.map(m=>renderMod(m)).join('')}
+function renderMod(m){const mod=MODS.find(x=>x.id===m);let body='';if(m==='todo')body=renderTodo();else if(m==='notes')body=renderNotes();else if(m==='links')body=renderLinks();else if(m==='habit')body=renderHabit();else if(m==='metric')body=renderMetric();else if(m==='images')body=renderImages();return`<div class="card module"><div class="mod-hdr"><div class="mod-ico"><i class="ti ${mod.icon}"></i></div><span class="mod-title">${mod.label}</span></div><div class="mod-body">${body}</div></div>`}
+
+function subKey(){return S.catId+'_'+(S.midId||'null')+'_'+S.subId}
+function rip(){if(S.view==='sub')document.getElementById('content').innerHTML=renderSub()}
+
+function renderTodo(){const todos=S.todos[subKey()]||[];const active=todos.filter(t=>!t.done);const done=todos.filter(t=>t.done);return`<div class="row-add"><input id="ti" class="gi-sm" placeholder="Nieuwe taak..." onkeydown="if(event.key==='Enter')addTodo()"><button class="ico-btn" onclick="addTodo()"><i class="ti ti-plus"></i></button></div>${active.length===0?'<p class="empty">Geen taken. Goed bezig!</p>':active.map(t=>`<div class="ti-row"><input type="checkbox" onchange="toggleTodo('${t.id}',this.checked)"><span style="flex:1">${esc(t.text)}</span><button class="del-btn" onclick="delTodo('${t.id}')"><i class="ti ti-x"></i></button></div>`).join('')}${done.length>0?`<div class="done-lbl">Voltooide taken van deze week</div>${done.map(t=>`<div class="ti-row done"><input type="checkbox" checked onchange="toggleTodo('${t.id}',this.checked)"><span style="flex:1">${esc(t.text)}</span><button class="del-btn" onclick="delTodo('${t.id}')"><i class="ti ti-x"></i></button></div>`).join('')}`:''}`}
+function addTodo(){const inp=document.getElementById('ti');const text=inp?.value.trim();if(!text)return;const k=subKey();if(!S.todos[k])S.todos[k]=[];S.todos[k].push({id:'t'+Date.now(),text,done:false});ss('todos');inp.value='';rip()}
+function toggleTodo(id,done){const k=subKey();const t=(S.todos[k]||[]).find(x=>x.id===id);if(t){t.done=done;ss('todos');rip()}}
+function delTodo(id){const k=subKey();S.todos[k]=(S.todos[k]||[]).filter(x=>x.id!==id);ss('todos');rip()}
+
+function renderNotes(){return`<textarea class="notes-ta" id="na" placeholder="Schrijf hier je notities...">${esc(S.notes[subKey()]||'')}</textarea><button class="notes-btn" onclick="saveNotes()">Opslaan</button>`}
+function saveNotes(){S.notes[subKey()]=document.getElementById('na')?.value||'';ss('notes');const b=document.querySelector('.notes-btn');if(b){b.textContent='Opgeslagen ✓';setTimeout(()=>{if(b)b.textContent='Opslaan'},1500)}}
+
+function renderLinks(){const links=S.links[subKey()]||[];return`<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px"><input id="lt" class="gi-sm" placeholder="Titel" style="flex:none"><input id="lu" class="gi-sm" placeholder="URL (https://...)" style="flex:none"><input id="ld" class="gi-sm" placeholder="Beschrijving (optioneel)" style="flex:none"><button class="add-btn" style="align-self:flex-start;margin-top:4px" onclick="addLink()"><i class="ti ti-plus"></i> Toevoegen</button></div>${links.length===0?'<p class="empty">Nog geen links.</p>':links.map(l=>`<div class="link-item"><a class="link-a" href="${esc(l.url)}" target="_blank">${esc(l.title)}</a><div class="link-url">${esc(l.url)}</div>${l.desc?`<div class="link-desc">${esc(l.desc)}</div>`:''}</div>`).join('')}`}
+function addLink(){const t=document.getElementById('lt')?.value.trim();const u=document.getElementById('lu')?.value.trim();const d=document.getElementById('ld')?.value.trim();if(!t||!u)return;const k=subKey();if(!S.links[k])S.links[k]=[];S.links[k].push({id:'l'+Date.now(),title:t,url:u,desc:d});ss('links');rip()}
+
+function renderHabit(){const k=subKey();const hab=S.habits[k]||{list:[],checks:{}};const today=new Date();const days=[];const dow=today.getDay();const mo=dow===0?-6:1-dow;for(let i=0;i<7;i++){const d=new Date(today);d.setDate(today.getDate()+mo+i);days.push(d)}const dl=['Ma','Di','Wo','Do','Vr','Za','Zo'];return`<div class="row-add"><input id="hi" class="gi-sm" placeholder="Nieuwe gewoonte..."><button class="ico-btn" onclick="addHabit()"><i class="ti ti-plus"></i></button></div>${hab.list.length===0?'<p class="empty">Voeg een gewoonte toe.</p>':''}<div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:4px"><thead><tr><th></th>${days.map((d,i)=>`<th><div class="hday">${dl[i]}<br>${d.getDate()}</div></th>`).join('')}</tr></thead><tbody>${hab.list.map(h=>`<tr><td class="hname">${esc(h.name)}</td>${days.map(d=>{const dk=d.toISOString().slice(0,10);const done=hab.checks[h.id+'_'+dk];return`<td><div class="hcell${done?' done':''}" onclick="toggleHabit('${h.id}','${dk}')">${done?'✓':''}</div></td>`}).join('')}</tr>`).join('')}</tbody></table></div>`}
+function addHabit(){const inp=document.getElementById('hi');const name=inp?.value.trim();if(!name)return;const k=subKey();if(!S.habits[k])S.habits[k]={list:[],checks:{}};S.habits[k].list.push({id:'h'+Date.now(),name});ss('habits');inp.value='';rip()}
+function toggleHabit(hid,dk){const k=subKey();if(!S.habits[k])S.habits[k]={list:[],checks:{}};S.habits[k].checks[hid+'_'+dk]=!S.habits[k].checks[hid+'_'+dk];ss('habits');rip()}
+
+function renderMetric(){const k=subKey();const data=S.metrics[k]||{unit:'',entries:[]};const sorted=[...data.entries].sort((a,b)=>a.date.localeCompare(b.date));return`<div class="metric-form"><input id="mv" type="number" placeholder="Waarde"><input id="mu" type="text" placeholder="Eenheid (bijv. kg)" value="${esc(data.unit)}"><input id="md" type="date" value="${new Date().toISOString().slice(0,10)}"><button class="ico-btn" onclick="addMetric()"><i class="ti ti-plus"></i></button></div>${sorted.length>=2?`<div style="height:110px;margin:8px 0">${buildChart(sorted)}</div>`:'<p class="empty">Voeg 2+ metingen toe voor een grafiek.</p>'}${sorted.slice().reverse().slice(0,5).map(e=>`<div class="met-row"><span>${e.date}</span><span>${e.value} ${esc(data.unit)}</span></div>`).join('')}`}
+function buildChart(entries){const W=400,H=100,P=16;const vals=entries.map(e=>parseFloat(e.value));const mn=Math.min(...vals),mx=Math.max(...vals),rng=mx-mn||1;const pts=entries.map((e,i)=>({x:P+(i/(entries.length-1))*(W-P*2),y:H-P-((parseFloat(e.value)-mn)/rng)*(H-P*2)}));const d='M'+pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('L');const a=d+`L${pts[pts.length-1].x.toFixed(1)},${H-P}L${pts[0].x.toFixed(1)},${H-P}Z`;return`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:100%"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3B5BA5" stop-opacity="0.3"/><stop offset="100%" stop-color="#3B5BA5" stop-opacity="0.02"/></linearGradient></defs><path d="${a}" fill="url(#cg)"/><path d="${d}" fill="none" stroke="#3B5BA5" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${pts.map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="#3B5BA5"/>`).join('')}<text x="${P}" y="12" font-size="10" fill="#8a8aaa">${mx.toFixed(1)}</text><text x="${P}" y="${H-3}" font-size="10" fill="#8a8aaa">${mn.toFixed(1)}</text></svg>`}
+function addMetric(){const val=parseFloat(document.getElementById('mv')?.value);const unit=document.getElementById('mu')?.value.trim();const date=document.getElementById('md')?.value;if(isNaN(val)||!date)return;const k=subKey();if(!S.metrics[k])S.metrics[k]={unit:'',entries:[]};S.metrics[k].unit=unit;S.metrics[k].entries.push({id:'m'+Date.now(),value:val,date});ss('metrics');rip()}
+
+function renderImages(){const imgs=S.images[subKey()]||[];return`<div class="img-drop"><input type="file" accept="image/*" multiple onchange="handleImgUpload(event)"><i class="ti ti-cloud-upload"></i><div class="img-drop-txt">Klik om afbeeldingen te uploaden</div><div class="img-drop-sub">PNG, JPG, GIF · meerdere bestanden</div></div>${imgs.length>0?`<div class="img-grid">${imgs.map((img,i)=>`<div class="img-thumb-wrap"><img class="img-thumb" src="${img.src}" alt="${esc(img.name)}"><button class="img-del" onclick="delImg(${i})"><i class="ti ti-x"></i></button></div>`).join('')}</div>`:''}`}
+function handleImgUpload(e){const files=Array.from(e.target.files);if(!files.length)return;const k=subKey();if(!S.images[k])S.images[k]=[];let done=0;files.forEach(file=>{const reader=new FileReader();reader.onload=ev=>{S.images[k].push({id:'img'+Date.now()+Math.random(),name:file.name,src:ev.target.result});ss('images');done++;if(done===files.length)rip()};reader.readAsDataURL(file)})}
+function delImg(i){const k=subKey();S.images[k].splice(i,1);ss('images');rip()}
+
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+render();
+</script>
+</body>
+</html>
